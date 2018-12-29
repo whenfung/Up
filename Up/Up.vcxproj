@@ -120,7 +120,14 @@
   <ItemGroup>
     <ClCompile Include="glad.c" />
     <ClCompile Include="stb_image.cpp" />
-    <ClCompile Include="Up.cpp" />
+    <ClCompile Include="up.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="up.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="up.fs" />
+    <None Include="up.vs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
