@@ -126,6 +126,10 @@
     <ClInclude Include="up.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="cubemaps.fs" />
+    <None Include="cubemaps.vs" />
+    <None Include="skybox.fs" />
+    <None Include="skybox.vs" />
     <None Include="up.fs" />
     <None Include="up.vs" />
   </ItemGroup>

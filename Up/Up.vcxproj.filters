@@ -40,5 +40,17 @@
     <None Include="up.vs">
       <Filter>着色器</Filter>
     </None>
+    <None Include="skybox.vs">
+      <Filter>着色器</Filter>
+    </None>
+    <None Include="skybox.fs">
+      <Filter>着色器</Filter>
+    </None>
+    <None Include="cubemaps.vs">
+      <Filter>着色器</Filter>
+    </None>
+    <None Include="cubemaps.fs">
+      <Filter>着色器</Filter>
+    </None>
   </ItemGroup>
 </Project>
