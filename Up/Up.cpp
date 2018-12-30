@@ -253,7 +253,7 @@ int main()
 		// draw skybox as last
 		glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
 		skyboxShader.use();
-		view = glm::mat4(glm::mat3(camera.GetViewMatrix())); // remove translation from the view matrix
+		view = glm::mat4(glm::mat3(camera.GetViewMatrix())); // 让天空以人为中心，去掉移动的量
 		skyboxShader.setMat4("view", view);
 		skyboxShader.setMat4("projection", projection);
 		// skybox cube
@@ -373,6 +373,7 @@ unsigned int loadTexture(char const * path)
 	return textureID;
 }
 
+//创建立方体贴图函数
 // loads a cubemap texture from 6 individual texture faces
 // order:
 // +X (right)
@@ -386,15 +387,19 @@ unsigned int loadCubemap(vector<std::string> faces)
 {
 	unsigned int textureID;
 	glGenTextures(1, &textureID);
+	//绑定纹理的时候注意，立方体贴图参数是GL_TEXTURE_CUBE_MAP
 	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 
 	int width, height, nrChannels;
 	for (unsigned int i = 0; i < faces.size(); i++)
 	{
+		//下载图片到CPU中
 		unsigned char *data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
 		if (data)
 		{
+			//将得到的纹理数据传入到GPU中，GL_TEXTURE_CUBE_MAP_POSITIVE_X是纹理目标，其实是枚举类型，单调递增
 			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+			//释放CPU中的资源
 			stbi_image_free(data);
 		}
 		else
@@ -403,10 +408,12 @@ unsigned int loadCubemap(vector<std::string> faces)
 			stbi_image_free(data);
 		}
 	}
+	//和普通纹理一样，我们需要设置纹理参数
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	//GL_TEXTURE_WRAP_R对应的是我们的Z坐标的环绕模式，GL_CLAMP_TO_EDGE是OpenGL将在我们对两个面之间采样的时候，永远返回它们的边界值。
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
 	return textureID;
