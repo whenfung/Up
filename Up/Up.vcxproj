@@ -127,7 +127,8 @@
     <ClInclude Include="..\include\Up\mesh.h" />
     <ClInclude Include="..\include\Up\model.h" />
     <ClInclude Include="..\include\Up\shader.h" />
-    <ClInclude Include="up.h" />
+    <ClInclude Include="..\include\up\skybox.h" />
+    <ClInclude Include="..\include\up\up.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="blending.fs" />
