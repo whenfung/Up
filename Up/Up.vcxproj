@@ -128,6 +128,12 @@
   <ItemGroup>
     <None Include="cubemaps.fs" />
     <None Include="cubemaps.vs" />
+    <None Include="debug_quad.fs" />
+    <None Include="dubug_quad.vs" />
+    <None Include="shadow_depth.fs" />
+    <None Include="shadow_depth.vs" />
+    <None Include="shadow_map.fs" />
+    <None Include="shadow_map.vs" />
     <None Include="skybox.fs" />
     <None Include="skybox.vs" />
     <None Include="up.fs" />
