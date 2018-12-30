@@ -70,5 +70,11 @@
     <None Include="shadow_depth.vs">
       <Filter>着色器</Filter>
     </None>
+    <None Include="blending.vs">
+      <Filter>着色器</Filter>
+    </None>
+    <None Include="blending.fs">
+      <Filter>着色器</Filter>
+    </None>
   </ItemGroup>
 </Project>

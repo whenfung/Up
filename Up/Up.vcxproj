@@ -126,6 +126,8 @@
     <ClInclude Include="up.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="blending.fs" />
+    <None Include="blending.vs" />
     <None Include="cubemaps.fs" />
     <None Include="cubemaps.vs" />
     <None Include="debug_quad.fs" />
