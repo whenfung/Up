@@ -123,6 +123,10 @@
     <ClCompile Include="up.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\include\Up\camera.h" />
+    <ClInclude Include="..\include\Up\mesh.h" />
+    <ClInclude Include="..\include\Up\model.h" />
+    <ClInclude Include="..\include\Up\shader.h" />
     <ClInclude Include="up.h" />
   </ItemGroup>
   <ItemGroup>
