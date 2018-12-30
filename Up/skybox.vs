@@ -10,5 +10,5 @@ void main()
 {
     TexCoords = aPos;      //天空图的纹理坐标等于实际坐标
     vec4 pos = projection * view * vec4(aPos, 1.0);  //天空图没有model矩阵，让天空图随着相机动
-    gl_Position = pos.xyww;    
+    gl_Position = pos.xyww;    //设置z为w，也就是1，这样保证天空图是最大的，深度测试所有物体都在前面
 }  
