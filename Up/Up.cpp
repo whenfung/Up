@@ -74,6 +74,7 @@ int main()
 	// -----------------------------
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
+	//混合绑定，因子等于1-c的alpha的分量
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	// build and compile shaders
@@ -82,7 +83,7 @@ int main()
 
 	// set up vertex data (and buffer(s)) and configure vertex attributes
 	// ------------------------------------------------------------------
-	float cubeVertices[] = {
+	float cubeVertices[] = {  //正方体
 		// positions          // texture Coords
 		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
 		 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
@@ -136,7 +137,7 @@ int main()
 		-5.0f, -0.5f, -5.0f,  0.0f, 2.0f,
 		 5.0f, -0.5f, -5.0f,  2.0f, 2.0f
 	};
-	float transparentVertices[] = {
+	float transparentVertices[] = {  //玻璃
 		// positions         // texture Coords (swapped y coordinates because texture is flipped upside down)
 		0.0f,  0.5f,  0.0f,  0.0f,  0.0f,
 		0.0f, -0.5f,  0.0f,  0.0f,  1.0f,
@@ -205,6 +206,9 @@ int main()
 
 	// render loop
 	// -----------
+	/*先绘制所有不透明的物体。
+		对所有透明的物体排序。
+		按顺序绘制所有透明的物体。*/
 	while (!glfwWindowShouldClose(window))
 	{
 		// per-frame time logic
@@ -258,6 +262,7 @@ int main()
 		// windows (from furthest to nearest)
 		glBindVertexArray(transparentVAO);
 		glBindTexture(GL_TEXTURE_2D, transparentTexture);
+		//map会自动排序按由远到近的方式进行渲染模型
 		for (std::map<float, glm::vec3>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it)
 		{
 			model = glm::mat4(1.0f);
@@ -357,9 +362,10 @@ unsigned int loadTexture(char const * path)
 			format = GL_RGBA;
 
 		glBindTexture(GL_TEXTURE_2D, textureID);
+		//设置format为可以透明，这样就可以实现玻璃效果了
 		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
-
+		
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT); // for this tutorial: use GL_CLAMP_TO_EDGE to prevent semi-transparent borders. Due to interpolation it takes texels from next repeat 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
