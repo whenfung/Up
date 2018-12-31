@@ -125,6 +125,7 @@
   <ItemGroup>
     <ClInclude Include="..\include\Up\camera.h" />
     <ClInclude Include="..\include\up\cube.h" />
+    <ClInclude Include="..\include\up\depthMap.h" />
     <ClInclude Include="..\include\Up\mesh.h" />
     <ClInclude Include="..\include\Up\model.h" />
     <ClInclude Include="..\include\Up\shader.h" />

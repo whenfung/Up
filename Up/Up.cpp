@@ -2,8 +2,7 @@
 #include <up/skybox.h>
 #include <up/floor.h>
 #include <up/cube.h>
-
-void renderScene(const Shader &shader);
+#include <up/depthMap.h>
 
 int main()
 {
@@ -17,50 +16,22 @@ int main()
 	Shader skyboxShader("skybox.vs", "skybox.fs");
 	Shader simpleDepthShader("shadow_depth.vs", "shadow_depth.fs");
 	Shader shader("shadow_map.vs", "shadow_map.fs");  
-	
-	Skybox skybox;   //天空
-	Floor  floor;    //地板
-	
 
-	// 载入地板纹理
-	unsigned int woodTexture = loadTexture("resources/textures/sufei.jpg");
-
-	// 创建帧深度对象缓存实现阴影
-	//存在纹理中的所有这些深度值
-	const unsigned int SHADOW_WIDTH = 1280, SHADOW_HEIGHT = 720;
-	unsigned int depthMapFBO;
-	glGenFramebuffers(1, &depthMapFBO);  // 创建一个帧缓存对象
-	unsigned int depthMap;               
-	glGenTextures(1, &depthMap);         // 创建深度缓存纹理
-	glBindTexture(GL_TEXTURE_2D, depthMap);
-	// GL_DEPTH_COMPONENT 是深度纹理信息
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-	float borderColor[] = { 1.0, 1.0, 1.0, 1.0 };  //纹理的边界设置为1.0，黑色 
-	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
-	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-	// 绑定深度缓存纹理，也就是帧缓存对象的深度信息将存在 depthMap 上。
-	// 当前的帧缓存存储了depthMap的纹理信息
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
-	// 下面两句告诉Opengl我们不需要颜色数据，只要深度信息
-	glDrawBuffer(GL_NONE);
-	glReadBuffer(GL_NONE);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);  //解绑
-
-
-	// shader configuration
-	// --------------------
-	shader.use();
-	shader.setInt("diffuseTexture", 0);
-	shader.setInt("shadowMap", 1);
-
-	//天空图初始化
+	// 背景着色器
 	skyboxShader.use();
 	skyboxShader.setInt("skybox", 0);
 
+	// 光照阴影着色器
+	shader.use();
+	shader.setInt("diffuseTexture", 0);   //环境贴图
+	shader.setInt("shadowMap", 1);        //阴影贴图
+
+	Skybox   skybox;       //天空
+	Floor    floor;        //地板
+	DepthMap depthMap;     // 光源视图深度纹理，用作阴影
+
+	// 载入所需纹理
+	unsigned int woodTexture = loadTexture("resources/textures/sufei.jpg");
 	skybox.loadCubemap();
 
 	// 循环渲染
@@ -74,41 +45,18 @@ int main()
 		processInput(window);
 
 		// change light position over time
-		//lightPos.x = sin(glfwGetTime()) * 3.0f;
-		//lightPos.z = cos(glfwGetTime()) * 2.0f;
-		//lightPos.y = 5.0 + cos(glfwGetTime()) * 1.0f;
+		lightPos.x = sin(glfwGetTime()) * 3.0f;
+		lightPos.z = cos(glfwGetTime()) * 2.0f;
+		lightPos.y = 5.0 + cos(glfwGetTime()) * 1.0f;
 
 		// 渲染
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //清除深度缓存和颜色缓存
 
-		// 1. render depth of scene to texture (from light's perspective)
-		// 渲染一个场景的深度信息作为深度纹理贴图进行绘制阴影。(从光源的视角下)
-		glm::mat4 lightProjection, lightView;        //光源的透视矩阵，光源的观察矩阵
-		glm::mat4 lightSpaceMatrix;                  //光空间变换矩阵
-		float near_plane = 1.0f, far_plane = 7.5f;   //投影的最近到最远的距离
-		//投影方式
-		//lightProjection = glm::perspective(glm::radians(45.0f), (GLfloat)SHADOW_WIDTH / (GLfloat)SHADOW_HEIGHT, near_plane, far_plane); // note that if you use a perspective projection matrix you'll have to change the light position as the current light position isn't enough to reflect the whole scene
-		lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
-		lightView = glm::lookAt(lightPos, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));  //光源看向场景中央，所以我们的这个角度就可以生成一个深度纹理
-		lightSpaceMatrix = lightProjection * lightView;  //投影*观察
-		// 从光的视图进行渲染画面
-		simpleDepthShader.use();
-		simpleDepthShader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
-		//一定要加glViewport，才能保证视口的阴影不会太小或者不完整
-		glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
-		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);   //将光源视图的深度信息存到depthMapFBO中
-		glClear(GL_DEPTH_BUFFER_BIT);                     //清除深度缓存
-		glActiveTexture(GL_TEXTURE0);                     //激活纹理
-		glBindTexture(GL_TEXTURE_2D, woodTexture);        //绑定纹理对象
-		renderScene(simpleDepthShader);                   //传入着色器进行渲染
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);             //对深度帧缓存对象进行解绑
+		// 得到光源视图的深度信息，作为深度纹理贴图进行 阴影绘制。
+		depthMap.renderMap(simpleDepthShader);  //生成深度纹理
 
-		// 光视图的深度信息搞定后视口要切换到原来的样子，处理图像
-		glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		// 2. render scene as normal using the generated depth/shadow map  
+		// 像往常一样渲染场景，只不过多了个深度纹理 
 		glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		shader.use();
@@ -116,53 +64,24 @@ int main()
 		glm::mat4 view = camera.GetViewMatrix();
 		shader.setMat4("projection", projection);
 		shader.setMat4("view", view);
-		// set light uniforms
+		// 设置光源信息和相机信息
 		shader.setVec3("viewPos", camera.Position);
 		shader.setVec3("lightPos", lightPos);
-		shader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
+		shader.setMat4("lightSpaceMatrix", depthMap.lightSpaceMatrix);
 			
 		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, depthMap);
+		glBindTexture(GL_TEXTURE_2D, depthMap.textureID);
 		floor.draw(shader);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, woodTexture);
-		renderScene(shader);
-
-		skybox.draw(skyboxShader);
+		depthMap.renderScene(shader);      //渲染场景
+		skybox.draw(skyboxShader);         //渲染天空图
 
 		// 更新缓存和IO事件
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
-
 	//清除glfw初始化的东西
 	glfwTerminate();
 	return 0;
 }
-
-// renders the 3D scene
-// --------------------
-void renderScene(const Shader &shader)
-{
-	Cube   cube;
-	// 绘制正方体
-	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(0.0f, 1.5f, 0.0));
-	model = glm::scale(model, glm::vec3(0.5f));
-	cube.draw(shader, model);
-
-	model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(2.0f, 0.0f, 1.0));
-	model = glm::scale(model, glm::vec3(0.5f));
-	cube.draw(shader, model);
-
-	model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(-1.0f, 0.0f, 2.0));
-	model = glm::rotate(model, glm::radians(60.0f), glm::normalize(glm::vec3(1.0, 0.0, 1.0)));
-	model = glm::scale(model, glm::vec3(0.25));
-	cube.draw(shader, model);
-}
-
-
-
-
