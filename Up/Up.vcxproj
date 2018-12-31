@@ -124,9 +124,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\Up\camera.h" />
+    <ClInclude Include="..\include\up\cube.h" />
     <ClInclude Include="..\include\Up\mesh.h" />
     <ClInclude Include="..\include\Up\model.h" />
     <ClInclude Include="..\include\Up\shader.h" />
+    <ClInclude Include="..\include\up\floor.h" />
     <ClInclude Include="..\include\up\skybox.h" />
     <ClInclude Include="..\include\up\up.h" />
   </ItemGroup>
@@ -135,8 +137,6 @@
     <None Include="blending.vs" />
     <None Include="cubemaps.fs" />
     <None Include="cubemaps.vs" />
-    <None Include="debug_quad.fs" />
-    <None Include="dubug_quad.vs" />
     <None Include="shadow_depth.fs" />
     <None Include="shadow_depth.vs" />
     <None Include="shadow_map.fs" />

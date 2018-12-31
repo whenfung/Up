@@ -1,24 +1,25 @@
 #version 330 core
-out vec4 FragColor;
+
+out vec4 FragColor; //输出的颜色
 
 in VS_OUT {
-    vec3 FragPos;
-    vec3 Normal;
-    vec2 TexCoords;
-    vec4 FragPosLightSpace;
+    vec3 FragPos;         // 世界坐标系上的位置
+    vec3 Normal;          // 世界坐标系上的法向
+    vec2 TexCoords;       // 纹理坐标
+    vec4 FragPosLightSpace;  //光空间上的片元位置
 } fs_in;
 
-uniform sampler2D diffuseTexture;
-uniform sampler2D shadowMap;
+uniform sampler2D diffuseTexture;   //普通纹理
+uniform sampler2D shadowMap;        //深度纹理
 
-uniform vec3 lightPos;
-uniform vec3 viewPos;
+uniform vec3 lightPos;              //光源位置
+uniform vec3 viewPos;               //眼睛位置
 
 float ShadowCalculation(vec4 fragPosLightSpace)
 {
-    // perform perspective divide
+    // 透视除法
     vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
-    // transform to [0,1] range
+    // 将（-1，1）的范围转化到（0，1）的范围
     projCoords = projCoords * 0.5 + 0.5;
     // get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
     float closestDepth = texture(shadowMap, projCoords.xy).r; 
@@ -52,25 +53,25 @@ float ShadowCalculation(vec4 fragPosLightSpace)
 
 void main()
 {           
-    vec3 color = texture(diffuseTexture, fs_in.TexCoords).rgb;
-    vec3 normal = normalize(fs_in.Normal);
-    vec3 lightColor = vec3(0.3);
+    vec3 color = texture(diffuseTexture, fs_in.TexCoords).rgb;  //纹理颜色
+    vec3 normal = normalize(fs_in.Normal);                      //单位化法向量
+    vec3 lightColor = vec3(0.3);                                //光源颜色
     // ambient
-    vec3 ambient = 0.3 * color;
+    vec3 ambient = 0.3 * color;                                 //环境光
     // diffuse
-    vec3 lightDir = normalize(lightPos - fs_in.FragPos);
+    vec3 lightDir = normalize(lightPos - fs_in.FragPos);        //漫反射
     float diff = max(dot(lightDir, normal), 0.0);
     vec3 diffuse = diff * lightColor;
     // specular
-    vec3 viewDir = normalize(viewPos - fs_in.FragPos);
+    vec3 viewDir = normalize(viewPos - fs_in.FragPos);     //镜面反射
     vec3 reflectDir = reflect(-lightDir, normal);
     float spec = 0.0;
     vec3 halfwayDir = normalize(lightDir + viewDir);  
     spec = pow(max(dot(normal, halfwayDir), 0.0), 64.0);
     vec3 specular = spec * lightColor;    
-    // calculate shadow
-    float shadow = ShadowCalculation(fs_in.FragPosLightSpace);                      
+    // 计算阴影系数，将和前面的漫反射和镜面反射叠加形成真正的颜色
+    float shadow = ShadowCalculation(fs_in.FragPosLightSpace);      //计算阴影系数                  
     vec3 lighting = (ambient + (1.0 - shadow) * (diffuse + specular)) * color;    
     
-    FragColor = vec4(lighting, 1.0);
+    FragColor = vec4(lighting, 1.0);  //输出颜色
 }

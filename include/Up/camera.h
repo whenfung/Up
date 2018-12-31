@@ -23,23 +23,24 @@ const float SENSITIVITY =  0.1f;
 const float ZOOM        =  45.0f;
 
 
-// An abstract camera class that processes input and calculates the corresponding Euler Angles, Vectors and Matrices for use in OpenGL
+// 通过鼠标的移动控制相机的视角，通过改变position来改变相机的位置
 class Camera
 {
 public:
     // Camera Attributes
-    glm::vec3 Position;
-    glm::vec3 Front;
-    glm::vec3 Up;
-    glm::vec3 Right;
-    glm::vec3 WorldUp;
-    // Euler Angles
-    float Yaw;
-    float Pitch;
-    // Camera options
-    float MovementSpeed;
-    float MouseSensitivity;
-    float Zoom;
+    glm::vec3 Position;          //相机位置
+	//前、上、右三个正交方向构成一个正在的相机坐标系
+    glm::vec3 Front;             //前
+    glm::vec3 Up;                //上
+    glm::vec3 Right;             //右
+    glm::vec3 WorldUp;           //默认的Up方向
+    // 欧拉角
+    float Yaw;             //俯仰角
+    float Pitch;           //偏航角
+    // 调整项
+    float MovementSpeed;         //移动速度
+    float MouseSensitivity;      //移动敏感度
+    float Zoom;                  //移动视野
 
     // Constructor with vectors
     Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH) : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
@@ -80,16 +81,16 @@ public:
             Position += Right * velocity;
     }
 
-    // Processes input received from a mouse input system. Expects the offset value in both the x and y direction.
+    // 鼠标的移动将会实时更新相机坐标系的欧拉角
     void ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true)
     {
-        xoffset *= MouseSensitivity;
+        xoffset *= MouseSensitivity;    //真正的偏移量要乘以灵敏度
         yoffset *= MouseSensitivity;
 
         Yaw   += xoffset;
         Pitch += yoffset;
 
-        // Make sure that when pitch is out of bounds, screen doesn't get flipped
+        // 保证俯仰角的范围是-89到89度。
         if (constrainPitch)
         {
             if (Pitch > 89.0f)
@@ -98,11 +99,11 @@ public:
                 Pitch = -89.0f;
         }
 
-        // Update Front, Right and Up Vectors using the updated Euler angles
+        // 根据俯仰角更新相机坐标系
         updateCameraVectors();
     }
 
-    // Processes input received from a mouse scroll-wheel event. Only requires input on the vertical wheel-axis
+    // 鼠标的滚动可以改变人的视野，通过改变透视函数的 zoom 参数
     void ProcessMouseScroll(float yoffset)
     {
         if (Zoom >= 1.0f && Zoom <= 45.0f)
@@ -114,16 +115,16 @@ public:
     }
 
 private:
-    // Calculates the front vector from the Camera's (updated) Euler Angles
+    // 根据欧拉角更新相机正向
     void updateCameraVectors()
     {
-        // Calculate the new Front vector
+        // 计算相机新的正方向
         glm::vec3 front;
         front.x = cos(glm::radians(Yaw)) * cos(glm::radians(Pitch));
         front.y = sin(glm::radians(Pitch));
         front.z = sin(glm::radians(Yaw)) * cos(glm::radians(Pitch));
         Front = glm::normalize(front);
-        // Also re-calculate the Right and Up vector
+        // 同样要更新右方向和上方向
         Right = glm::normalize(glm::cross(Front, WorldUp));  // Normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
         Up    = glm::normalize(glm::cross(Right, Front));
     }

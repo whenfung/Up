@@ -47,6 +47,12 @@
     <ClInclude Include="..\include\up\skybox.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\up\floor.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\up\cube.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="up.fs">
@@ -65,12 +71,6 @@
       <Filter>着色器</Filter>
     </None>
     <None Include="cubemaps.fs">
-      <Filter>着色器</Filter>
-    </None>
-    <None Include="dubug_quad.vs">
-      <Filter>着色器</Filter>
-    </None>
-    <None Include="debug_quad.fs">
       <Filter>着色器</Filter>
     </None>
     <None Include="shadow_map.vs">
