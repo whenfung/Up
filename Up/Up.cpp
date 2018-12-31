@@ -1,9 +1,9 @@
 #include <up/up.h>
 #include <up/skybox.h>
 #include <up/floor.h>
+#include <up/cube.h>
 
 void renderScene(const Shader &shader);
-void renderCube();
 
 int main()
 {
@@ -13,18 +13,21 @@ int main()
 	// 设置Opengl的全局配置，开启深度缓存
 	glEnable(GL_DEPTH_TEST);
 
-	// 创建所有着色器并编译
-	Shader shader("shadow_map.vs", "shadow_map.fs");
+	// 初始化着色器
+	Shader skyboxShader("skybox.vs", "skybox.fs");
 	Shader simpleDepthShader("shadow_depth.vs", "shadow_depth.fs");
-
-	Floor floor;
+	Shader shader("shadow_map.vs", "shadow_map.fs");  
+	
+	Skybox skybox;   //天空
+	Floor  floor;    //地板
+	
 
 	// 载入地板纹理
-	unsigned int woodTexture = loadTexture("resources/textures/wood.png");
+	unsigned int woodTexture = loadTexture("resources/textures/sufei.jpg");
 
 	// 创建帧深度对象缓存实现阴影
 	//存在纹理中的所有这些深度值
-	const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
+	const unsigned int SHADOW_WIDTH = 1280, SHADOW_HEIGHT = 720;
 	unsigned int depthMapFBO;
 	glGenFramebuffers(1, &depthMapFBO);  // 创建一个帧缓存对象
 	unsigned int depthMap;               
@@ -54,16 +57,10 @@ int main()
 	shader.setInt("diffuseTexture", 0);
 	shader.setInt("shadowMap", 1);
 
-	// lighting info
-	// -------------
-	glm::vec3 lightPos(-2.0f, 4.0f, -1.0f);
-
 	//天空图初始化
-	Shader skyboxShader("skybox.vs", "skybox.fs");
 	skyboxShader.use();
 	skyboxShader.setInt("skybox", 0);
 
-	Skybox skybox;
 	skybox.loadCubemap();
 
 	// 循环渲染
@@ -77,9 +74,9 @@ int main()
 		processInput(window);
 
 		// change light position over time
-		lightPos.x = sin(glfwGetTime()) * 3.0f;
-		lightPos.z = cos(glfwGetTime()) * 2.0f;
-		lightPos.y = 5.0 + cos(glfwGetTime()) * 1.0f;
+		//lightPos.x = sin(glfwGetTime()) * 3.0f;
+		//lightPos.z = cos(glfwGetTime()) * 2.0f;
+		//lightPos.y = 5.0 + cos(glfwGetTime()) * 1.0f;
 
 		// 渲染
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -147,98 +144,25 @@ int main()
 // --------------------
 void renderScene(const Shader &shader)
 {
+	Cube   cube;
 	// 绘制正方体
 	glm::mat4 model = glm::mat4(1.0f);
 	model = glm::translate(model, glm::vec3(0.0f, 1.5f, 0.0));
 	model = glm::scale(model, glm::vec3(0.5f));
-	shader.setMat4("model", model);
-	renderCube();
+	cube.draw(shader, model);
+
 	model = glm::mat4(1.0f);
 	model = glm::translate(model, glm::vec3(2.0f, 0.0f, 1.0));
 	model = glm::scale(model, glm::vec3(0.5f));
-	shader.setMat4("model", model);
-	renderCube();
+	cube.draw(shader, model);
+
 	model = glm::mat4(1.0f);
 	model = glm::translate(model, glm::vec3(-1.0f, 0.0f, 2.0));
 	model = glm::rotate(model, glm::radians(60.0f), glm::normalize(glm::vec3(1.0, 0.0, 1.0)));
 	model = glm::scale(model, glm::vec3(0.25));
-	shader.setMat4("model", model);
-	renderCube();
+	cube.draw(shader, model);
 }
 
-// renderCube() renders a 1x1 3D cube in NDC.
-// 绘制正方体
-unsigned int cubeVAO = 0;
-unsigned int cubeVBO = 0;
-void renderCube()
-{
-	// 初始化
-	if (cubeVAO == 0)
-	{
-		float vertices[] = {
-			// back face
-			-1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f, // bottom-left
-			 1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, // top-right
-			 1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 0.0f, // bottom-right         
-			 1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, // top-right
-			-1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f, // bottom-left
-			-1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 1.0f, // top-left
-			// front face
-			-1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 0.0f, // bottom-left
-			 1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 0.0f, // bottom-right
-			 1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 1.0f, // top-right
-			 1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 1.0f, // top-right
-			-1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 1.0f, // top-left
-			-1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 0.0f, // bottom-left
-			// left face
-			-1.0f,  1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-right
-			-1.0f,  1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 1.0f, // top-left
-			-1.0f, -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-left
-			-1.0f, -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-left
-			-1.0f, -1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 0.0f, // bottom-right
-			-1.0f,  1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-right
-			// right face
-			 1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-left
-			 1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-right
-			 1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 1.0f, // top-right         
-			 1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-right
-			 1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-left
-			 1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 0.0f, // bottom-left     
-			// bottom face
-			-1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f, // top-right
-			 1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 1.0f, // top-left
-			 1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f, // bottom-left
-			 1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f, // bottom-left
-			-1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 0.0f, // bottom-right
-			-1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f, // top-right
-			// top face
-			-1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f, // top-left
-			 1.0f,  1.0f , 1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f, // bottom-right
-			 1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 1.0f, // top-right     
-			 1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f, // bottom-right
-			-1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f, // top-left
-			-1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 0.0f  // bottom-left        
-		};
-		glGenVertexArrays(1, &cubeVAO);
-		glGenBuffers(1, &cubeVBO);
-		// fill buffer
-		glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-		// link vertex attributes
-		glBindVertexArray(cubeVAO);
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-		glEnableVertexAttribArray(2);
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindVertexArray(0);
-	}
-	// render Cube
-	glBindVertexArray(cubeVAO);
-	glDrawArrays(GL_TRIANGLES, 0, 36);
-	glBindVertexArray(0);
-}
+
 
 

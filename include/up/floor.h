@@ -12,13 +12,13 @@ private:
 
 	float vertices[48] = {
 		// 位置信息             //法向量（y轴正向）// 纹理坐标
-		 25.0f, -0.5f,  25.0f,  0.0f, 1.0f, 0.0f,  25.0f,  0.0f,
-		-25.0f, -0.5f,  25.0f,  0.0f, 1.0f, 0.0f,   0.0f,  0.0f,
-		-25.0f, -0.5f, -25.0f,  0.0f, 1.0f, 0.0f,   0.0f, 25.0f,
+		 25.0f, -0.5001f,  25.0f,  0.0f, 1.0f, 0.0f,  25.0f,  0.0f,
+		-25.0f, -0.5001f,  25.0f,  0.0f, 1.0f, 0.0f,   0.0f,  0.0f,
+		-25.0f, -0.5001f, -25.0f,  0.0f, 1.0f, 0.0f,   0.0f, 25.0f,
 
-		 25.0f, -0.5f,  25.0f,  0.0f, 1.0f, 0.0f,  25.0f,  0.0f,
-		-25.0f, -0.5f, -25.0f,  0.0f, 1.0f, 0.0f,   0.0f, 25.0f,
-		 25.0f, -0.5f, -25.0f,  0.0f, 1.0f, 0.0f,  25.0f, 25.0f
+		 25.0f, -0.5001f,  25.0f,  0.0f, 1.0f, 0.0f,  25.0f,  0.0f,
+		-25.0f, -0.5001f, -25.0f,  0.0f, 1.0f, 0.0f,   0.0f, 25.0f,
+		 25.0f, -0.5001f, -25.0f,  0.0f, 1.0f, 0.0f,  25.0f, 25.0f
 	};
 };
 
@@ -36,7 +36,8 @@ Floor::Floor()
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 	glBindVertexArray(0);  //先解绑VAO，养成好习惯
-	textureID = loadTexture("resources/textures/metal.png");
+	// 载入地板纹理
+	textureID = loadTexture("resources/textures/wood.png");
 }
 
 inline void Floor::draw(Shader & shader)
@@ -45,8 +46,8 @@ inline void Floor::draw(Shader & shader)
 	glm::mat4 model = glm::mat4(1.0f);
 	shader.setMat4("model", model);
 	glBindVertexArray(VAO);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, textureID);
+	glActiveTexture(GL_TEXTURE0);                     //激活纹理
+	glBindTexture(GL_TEXTURE_2D, textureID);        //绑定纹理对象
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 

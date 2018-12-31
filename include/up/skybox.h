@@ -57,12 +57,12 @@ public:
 	// load textures
 	vector<std::string> faces
 	{
-		"resources/textures/skybox/right.jpg",
-		"resources/textures/skybox/left.jpg",
-		"resources/textures/skybox/top.jpg",
-		"resources/textures/skybox/bottom.jpg",
-		"resources/textures/skybox/front.jpg",
-		"resources/textures/skybox/back.jpg"
+		"resources/textures/ely_hills/hills_ft.tga",
+		"resources/textures/ely_hills/hills_bk.tga",
+		"resources/textures/ely_hills/hills_up.tga",
+		"resources/textures/ely_hills/hills_dn.tga",
+		"resources/textures/ely_hills/hills_rt.tga",
+		"resources/textures/ely_hills/hills_lf.tga"
 	};
 };
 
