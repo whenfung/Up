@@ -1,78 +1,82 @@
-float skyboxVertices[] = {
-	// positions          
-	-1.0f,  1.0f, -1.0f,
-	-1.0f, -1.0f, -1.0f,
-	 1.0f, -1.0f, -1.0f,
-	 1.0f, -1.0f, -1.0f,
-	 1.0f,  1.0f, -1.0f,
-	-1.0f,  1.0f, -1.0f,
-
-	-1.0f, -1.0f,  1.0f,
-	-1.0f, -1.0f, -1.0f,
-	-1.0f,  1.0f, -1.0f,
-	-1.0f,  1.0f, -1.0f,
-	-1.0f,  1.0f,  1.0f,
-	-1.0f, -1.0f,  1.0f,
-
-	 1.0f, -1.0f, -1.0f,
-	 1.0f, -1.0f,  1.0f,
-	 1.0f,  1.0f,  1.0f,
-	 1.0f,  1.0f,  1.0f,
-	 1.0f,  1.0f, -1.0f,
-	 1.0f, -1.0f, -1.0f,
-
-	-1.0f, -1.0f,  1.0f,
-	-1.0f,  1.0f,  1.0f,
-	 1.0f,  1.0f,  1.0f,
-	 1.0f,  1.0f,  1.0f,
-	 1.0f, -1.0f,  1.0f,
-	-1.0f, -1.0f,  1.0f,
-
-	-1.0f,  1.0f, -1.0f,
-	 1.0f,  1.0f, -1.0f,
-	 1.0f,  1.0f,  1.0f,
-	 1.0f,  1.0f,  1.0f,
-	-1.0f,  1.0f,  1.0f,
-	-1.0f,  1.0f, -1.0f,
-
-	-1.0f, -1.0f, -1.0f,
-	-1.0f, -1.0f,  1.0f,
-	 1.0f, -1.0f, -1.0f,
-	 1.0f, -1.0f, -1.0f,
-	-1.0f, -1.0f,  1.0f,
-	 1.0f, -1.0f,  1.0f
-};
-
-// load textures
-vector<std::string> skyboxFaces
+class Skybox
 {
-	"resources/textures/skybox/right.jpg",
-	"resources/textures/skybox/left.jpg",
-	"resources/textures/skybox/top.jpg",
-	"resources/textures/skybox/bottom.jpg",
-	"resources/textures/skybox/front.jpg",
-	"resources/textures/skybox/back.jpg"
+public:
+	Skybox();
+	void loadCubemap();
+	void draw(Shader shader);
+	~Skybox();
+
+	unsigned int VAO;
+	unsigned int VBO;
+	unsigned int textureID;
+
+	float vertices[108] = {
+		// positions          
+		-1.0f,  1.0f, -1.0f,
+		-1.0f, -1.0f, -1.0f,
+		 1.0f, -1.0f, -1.0f,
+		 1.0f, -1.0f, -1.0f,
+		 1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+
+		-1.0f, -1.0f,  1.0f,
+		-1.0f, -1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f,  1.0f,
+		-1.0f, -1.0f,  1.0f,
+
+		 1.0f, -1.0f, -1.0f,
+		 1.0f, -1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f, -1.0f,
+		 1.0f, -1.0f, -1.0f,
+
+		-1.0f, -1.0f,  1.0f,
+		-1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f, -1.0f,  1.0f,
+		-1.0f, -1.0f,  1.0f,
+
+		-1.0f,  1.0f, -1.0f,
+		 1.0f,  1.0f, -1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		-1.0f,  1.0f,  1.0f,
+		-1.0f,  1.0f, -1.0f,
+
+		-1.0f, -1.0f, -1.0f,
+		-1.0f, -1.0f,  1.0f,
+		 1.0f, -1.0f, -1.0f,
+		 1.0f, -1.0f, -1.0f,
+		-1.0f, -1.0f,  1.0f,
+		 1.0f, -1.0f,  1.0f
+	};
+	// load textures
+	vector<std::string> faces
+	{
+		"resources/textures/skybox/right.jpg",
+		"resources/textures/skybox/left.jpg",
+		"resources/textures/skybox/top.jpg",
+		"resources/textures/skybox/bottom.jpg",
+		"resources/textures/skybox/front.jpg",
+		"resources/textures/skybox/back.jpg"
+	};
 };
 
-//载入天空图并设置相应的参数，返回纹理对象的ID
-unsigned int loadCubemap(vector<std::string> faces);
-
-unsigned int initSkybox();
-
-
-unsigned int initSkybox() {
+Skybox::Skybox()
+{
 	// skybox VAO
-	unsigned int skyboxVAO, skyboxVBO;
-	glGenVertexArrays(1, &skyboxVAO);
-	glGenBuffers(1, &skyboxVBO);
-	glBindVertexArray(skyboxVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+	glBindVertexArray(VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices, GL_STATIC_DRAW);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	return skyboxVAO;
 }
-
 
 // 载入正方体贴图，可以用在天空图
 // order:
@@ -83,9 +87,8 @@ unsigned int initSkybox() {
 // +Z (front) 
 // -Z (back)
 // 参数是六个方向的纹理路径
-unsigned int loadCubemap(vector<std::string> faces)
+void Skybox::loadCubemap()
 {
-	unsigned int textureID;
 	glGenTextures(1, &textureID);
 	//绑定正方体贴图
 	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
@@ -112,6 +115,28 @@ unsigned int loadCubemap(vector<std::string> faces)
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+}
 
-	return textureID;
+void Skybox::draw(Shader shader)
+{
+	// draw skybox as last
+	glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
+	shader.use();
+	glm::mat4 view = glm::mat4(glm::mat3(camera.GetViewMatrix())); // remove translation from the view matrix
+	glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+	shader.setMat4("view", view);
+	shader.setMat4("projection", projection);
+	// skybox cube
+	glBindVertexArray(VAO);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glBindVertexArray(0);
+	glDepthFunc(GL_LESS); // set depth function back to default
+}
+
+Skybox::~Skybox()
+{
+	glDeleteVertexArrays(1, &VAO);
+	glDeleteBuffers(1, &VBO);
 }
