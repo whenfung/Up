@@ -44,7 +44,7 @@ int main()
 		//监听按键并作出相应的响应
 		processInput(window);
 
-		// change light position over time
+		// 随时间变化
 		lightPos.x = sin(glfwGetTime()) * 3.0f;
 		lightPos.z = cos(glfwGetTime()) * 2.0f;
 		lightPos.y = 5.0 + cos(glfwGetTime()) * 1.0f;
@@ -59,11 +59,13 @@ int main()
 		// 像往常一样渲染场景，只不过多了个深度纹理 
 		glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 		shader.use();
 		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 		glm::mat4 view = camera.GetViewMatrix();
 		shader.setMat4("projection", projection);
 		shader.setMat4("view", view);
+
 		// 设置光源信息和相机信息
 		shader.setVec3("viewPos", camera.Position);
 		shader.setVec3("lightPos", lightPos);
@@ -74,6 +76,7 @@ int main()
 		floor.draw(shader);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, woodTexture);
+
 		depthMap.renderScene(shader);      //渲染场景
 		skybox.draw(skyboxShader);         //渲染天空图
 
