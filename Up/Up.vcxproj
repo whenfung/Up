@@ -144,8 +144,8 @@
     <None Include="shadow_map.vs" />
     <None Include="skybox.fs" />
     <None Include="skybox.vs" />
-    <None Include="up.fs" />
-    <None Include="up.vs" />
+    <None Include="model.fs" />
+    <None Include="model.vs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

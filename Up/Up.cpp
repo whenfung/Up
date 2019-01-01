@@ -16,6 +16,7 @@ int main()
 	Shader skyboxShader("skybox.vs", "skybox.fs");
 	Shader simpleDepthShader("shadow_depth.vs", "shadow_depth.fs");
 	Shader shader("shadow_map.vs", "shadow_map.fs");  
+	Shader modelShader("model.vs", "model.fs");
 
 	// 背景着色器
 	skyboxShader.use();
@@ -29,9 +30,14 @@ int main()
 	Skybox   skybox;       //天空
 	Floor    floor;        //地板
 	DepthMap depthMap;     // 光源视图深度纹理，用作阴影
+	Model nanosuit("resources/objects/house/cottage.obj");
 
-	// 载入所需纹理
+	// draw in wireframe
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+	// 所需纹理载入
 	unsigned int woodTexture = loadTexture("resources/textures/sufei.jpg");
+	//所需天空图载入
 	skybox.loadCubemap();
 
 	// 循环渲染
@@ -73,12 +79,31 @@ int main()
 			
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, depthMap.textureID);
+
 		floor.draw(shader);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, woodTexture);
 
 		depthMap.renderScene(shader);      //渲染场景
-		skybox.draw(skyboxShader);         //渲染天空图
+
+		 // -------------------------------渲染OBJ文件
+		modelShader.use();
+
+		// view/projection transformations
+		projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+		view = camera.GetViewMatrix();
+		modelShader.setMat4("projection", projection);
+		modelShader.setMat4("view", view);
+
+		// render the loaded model
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(1.5f, -0.5f, 0.0f)); // translate it down so it's at the center of the scene
+		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// it's a bit too big for our scene, so scale it down
+		modelShader.setMat4("model", model);
+		nanosuit.Draw(modelShader);
+
+		//---------------------------------渲染天空图
+		skybox.draw(skyboxShader);         
 
 		// 更新缓存和IO事件
 		glfwSwapBuffers(window);
