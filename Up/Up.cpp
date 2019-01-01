@@ -34,7 +34,7 @@ int main()
 	Skybox   skybox;       //天空
 	Floor    floor;        //地板
 	DepthMap depthMap;     // 光源视图深度纹理，用作阴影
-	Model nanosuit("resources/objects/nanosuit/nanosuit.obj");
+
 	Model house("resources/objects/house/house.obj");
 	Model dog("resources/objects/dog/12228_Dog_v1_L2.obj");
 	Model balloon("resources/objects/balloon/11809_Hot_air_balloon_l2.obj");
@@ -112,16 +112,8 @@ int main()
 		modelShader.setMat4("projection", projection);
 		modelShader.setMat4("view", view);
 
-		// 渲染机器人
-		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(-5.5f, -0.5f, 0.0f)); // translate it down so it's at the center of the scene
-		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// it's a bit too big for our scene, so scale it down
-		//model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0, 0.0, 0.0));
-		modelShader.setMat4("model", model);
-		nanosuit.Draw(modelShader);
-
 		// 渲染房子
-		model = glm::mat4(1.0f);
+		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(20.0f, -0.5f, 0.0f)); // translate it down so it's at the center of the scene
 		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));	// it's a bit too big for our scene, so scale it down
 		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0, 1.0, 0.0));

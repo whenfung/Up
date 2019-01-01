@@ -12,6 +12,7 @@ public:
 	glm::mat4 lightProjection, lightView;        //光源的透视矩阵，光源的观察矩阵
 	glm::mat4 lightSpaceMatrix;                  //光空间变换矩阵
 	float near_plane = 1.0f, far_plane = 20.0f;   //投影的最近到最远的距离
+	Cube cube;
 };
 
 DepthMap::DepthMap()
@@ -67,22 +68,11 @@ inline void DepthMap::renderMap(Shader & shader)
 
 inline void DepthMap::renderScene(const Shader & shader)
 {
-	Cube   cube;
-	// 绘制正方体
+	// 绘制机器人
 	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(0.0f, 1.5f, 0.0));
+	model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0));
+	model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0, 0.0, 0.0));
 	model = glm::scale(model, glm::vec3(0.5f));
-	cube.draw(shader, model);
-
-	model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(4.0f, 0.5f, 2.0));
-	model = glm::scale(model, glm::vec3(0.25f));
-	cube.draw(shader, model);
-
-	model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(-1.0f, 0.0f, 2.0));
-	model = glm::rotate(model, glm::radians(60.0f), glm::normalize(glm::vec3(1.0, 0.0, 1.0)));
-	model = glm::scale(model, glm::vec3(0.25));
 	cube.draw(shader, model);
 }
 
