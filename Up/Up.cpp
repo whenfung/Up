@@ -165,6 +165,8 @@ int main()
 		lamp.draw(lampShader, model);
 
 		//---------------------------------渲染天空图
+		skyboxShader.use();
+		skyboxShader.setFloat("ratio", ratio);
 		skybox.draw(skyboxShader);         
 
 		// 更新缓存和IO事件

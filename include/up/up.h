@@ -33,6 +33,9 @@ float ;  //机器人前后运动
 // 光源
 glm::vec3 lightPos(3.4f, 9.6f, 16.9f);
 
+//调节白天黑夜
+float ratio = 1.0;
+
 //-----------------------------------------------------------函数声明
 //一些必须要用到的库的初始化
 GLFWwindow* initWindows();
@@ -105,20 +108,28 @@ void processInput(GLFWwindow *window)
 		camera.ProcessKeyboard(LEFT, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)        //D是右移
 		camera.ProcessKeyboard(RIGHT, deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS)        //D是右移
+
+	//调节灯光位置
+	if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS)        
 		lightPos.x -= 0.1;
-	if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)        //D是右移
+	if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)        
 		lightPos.x += 0.1;
-	if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS)        //D是右移
+	if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS)        
 		lightPos.z -= 0.1;
-	if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)        //D是右移
+	if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)        
 		lightPos.z += 0.1;
-	if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS)        //D是右移
+	if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS)        
 		lightPos.y -= 0.1;
-	if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS) {        //D是右移
+	if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)       
 		lightPos.y += 0.1;
-		std::cout << lightPos.x << " " << lightPos.y << " " << lightPos.z << std::endl;
-	}
+	
+	// 调节黑夜白天
+	if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS)
+		if(ratio < 1.0)
+			ratio += 0.05;
+	if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS)
+		if (ratio > 0.2)
+			ratio -= 0.05;
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
