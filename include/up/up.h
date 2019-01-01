@@ -27,8 +27,6 @@ bool firstMouse = true;
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
-float robot_x, robot_y;  //机器人左右旋转
-
 // 光源
 glm::vec3 lightPos(3.4f, 9.6f, 16.9f);
 

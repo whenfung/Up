@@ -11,7 +11,7 @@ public:
 	const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
 	glm::mat4 lightProjection, lightView;        //光源的透视矩阵，光源的观察矩阵
 	glm::mat4 lightSpaceMatrix;                  //光空间变换矩阵
-	float near_plane = 1.0f, far_plane = 20.0f;   //投影的最近到最远的距离
+	float near_plane = 1.0f, far_plane = 30.0f;   //投影的最近到最远的距离
 	Cube cube;
 	glm::mat4 model;
 };
@@ -67,12 +67,44 @@ inline void DepthMap::renderMap(Shader & shader)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-inline void DepthMap::renderScene(const Shader & shader)
+inline void DepthMap::renderScene(const Shader & shader)  //绘制机器人
 {
-	// 绘制机器人
+	// 身体
+	model = glm::mat4(1.0f); 
+	//model = glm::translate(model, camera.Position);
+	model = glm::translate(model, glm::vec3(1.0f, 0.0f, 34.0));
+	model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0, 0.0, 0.0));
+	model = glm::scale(model, glm::vec3(0.5f));
+	cube.draw(shader, model);
+
+	// 左上肢
 	model = glm::mat4(1.0f);
 	//model = glm::translate(model, camera.Position);
-	model = glm::translate(model, glm::vec3(1.0f, 0.0f, 24.0));
+	model = glm::translate(model, glm::vec3(1.0f, 0.0f, 34.0));
+	model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0, 0.0, 0.0));
+	model = glm::scale(model, glm::vec3(0.5f));
+	cube.draw(shader, model);
+
+	// 右上肢
+	model = glm::mat4(1.0f);
+	//model = glm::translate(model, camera.Position);
+	model = glm::translate(model, glm::vec3(1.0f, 0.0f, 34.0));
+	model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0, 0.0, 0.0));
+	model = glm::scale(model, glm::vec3(0.5f));
+	cube.draw(shader, model);
+
+	// 左下肢
+	model = glm::mat4(1.0f);
+	//model = glm::translate(model, camera.Position);
+	model = glm::translate(model, glm::vec3(1.0f, 0.0f, 34.0));
+	model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0, 0.0, 0.0));
+	model = glm::scale(model, glm::vec3(0.5f));
+	cube.draw(shader, model);
+
+	// 右下肢
+	model = glm::mat4(1.0f);
+	//model = glm::translate(model, camera.Position);
+	model = glm::translate(model, glm::vec3(1.0f, 0.0f, 34.0));
 	model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0, 0.0, 0.0));
 	model = glm::scale(model, glm::vec3(0.5f));
 	cube.draw(shader, model);

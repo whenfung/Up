@@ -21,11 +21,12 @@ in vec2 TexCoords;
 uniform vec3 viewPos;
 uniform Material material;
 uniform Light light;
+uniform float ratio;
 
 void main()
 {    
     // 环境光
-    vec3 ambient = light.ambient * texture(material.diffuse, TexCoords).rgb;
+    vec3 ambient = (light.ambient + 0.4 * ratio) * texture(material.diffuse, TexCoords).rgb;
   	
     // 漫反射光 
     vec3 norm = normalize(Normal);

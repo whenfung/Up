@@ -96,21 +96,22 @@ int main()
 		modelShader.setVec3("light.position", lightPos);
 		modelShader.setVec3("viewPos", camera.Position);
 
-		// light properties
+		// 灯光材质
 		modelShader.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
 		modelShader.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
 		modelShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
 
-		// material properties
+		// 物体材质
 		modelShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
 		modelShader.setFloat("material.shininess", 32.0f);
 
 
-		// view/projection transformations
+		// 观察/投影变换
 		projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 		view = camera.GetViewMatrix();
 		modelShader.setMat4("projection", projection);
 		modelShader.setMat4("view", view);
+		modelShader.setFloat("ratio", ratio);
 
 		// 渲染房子
 		glm::mat4 model = glm::mat4(1.0f);
