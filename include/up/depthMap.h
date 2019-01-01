@@ -75,8 +75,8 @@ inline void DepthMap::renderScene(const Shader & shader)
 	cube.draw(shader, model);
 
 	model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(4.0f, 1.5f, 2.0));
-	model = glm::scale(model, glm::vec3(2.0f));
+	model = glm::translate(model, glm::vec3(4.0f, 0.5f, 2.0));
+	model = glm::scale(model, glm::vec3(0.25f));
 	cube.draw(shader, model);
 
 	model = glm::mat4(1.0f);

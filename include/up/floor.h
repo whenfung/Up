@@ -12,13 +12,13 @@ private:
 
 	float vertices[48] = {
 		// 位置信息             //法向量（y轴正向）// 纹理坐标
-		 25.0f, -0.5001f,  25.0f,  0.0f, 1.0f, 0.0f,  25.0f,  0.0f,
-		-25.0f, -0.5001f,  25.0f,  0.0f, 1.0f, 0.0f,   0.0f,  0.0f,
-		-25.0f, -0.5001f, -25.0f,  0.0f, 1.0f, 0.0f,   0.0f, 25.0f,
+		 1000.0f, -0.5001f,  1000.0f,  0.0f, 1.0f, 0.0f,  1000.0f,  0.0f,
+		-1000.0f, -0.5001f,  1000.0f,  0.0f, 1.0f, 0.0f,   0.0f,  0.0f,
+		-1000.0f, -0.5001f, -1000.0f,  0.0f, 1.0f, 0.0f,   0.0f, 1000.0f,
 
-		 25.0f, -0.5001f,  25.0f,  0.0f, 1.0f, 0.0f,  25.0f,  0.0f,
-		-25.0f, -0.5001f, -25.0f,  0.0f, 1.0f, 0.0f,   0.0f, 25.0f,
-		 25.0f, -0.5001f, -25.0f,  0.0f, 1.0f, 0.0f,  25.0f, 25.0f
+		 1000.0f, -0.5001f,  1000.0f,  0.0f, 1.0f, 0.0f,  1000.0f,   0.0f,
+		-1000.0f, -0.5001f, -1000.0f,  0.0f, 1.0f, 0.0f,   0.0f,  1000.0f,
+		 1000.0f, -0.5001f, -1000.0f,  0.0f, 1.0f, 0.0f,  1000.0f, 1000.0f
 	};
 };
 
@@ -37,7 +37,7 @@ Floor::Floor()
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 	glBindVertexArray(0);  //先解绑VAO，养成好习惯
 	// 载入地板纹理
-	textureID = loadTexture("resources/textures/wood.png");
+	textureID = loadTexture("resources/textures/caodi.jpg");
 }
 
 inline void Floor::draw(Shader & shader)

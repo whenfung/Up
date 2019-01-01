@@ -30,7 +30,7 @@ int main()
 	Skybox   skybox;       //天空
 	Floor    floor;        //地板
 	DepthMap depthMap;     // 光源视图深度纹理，用作阴影
-	Model nanosuit("resources/objects/house/cottage.obj");
+	Model nanosuit("resources/objects/nanosuit/nanosuit.obj");
 
 	// draw in wireframe
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -97,8 +97,9 @@ int main()
 
 		// render the loaded model
 		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(1.5f, -0.5f, 0.0f)); // translate it down so it's at the center of the scene
+		model = glm::translate(model, glm::vec3(5.5f, -0.5f, 0.0f)); // translate it down so it's at the center of the scene
 		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// it's a bit too big for our scene, so scale it down
+		//model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0, 0.0, 0.0));
 		modelShader.setMat4("model", model);
 		nanosuit.Draw(modelShader);
 
