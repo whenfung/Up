@@ -13,6 +13,7 @@ public:
 	glm::mat4 lightSpaceMatrix;                  //光空间变换矩阵
 	float near_plane = 1.0f, far_plane = 20.0f;   //投影的最近到最远的距离
 	Cube cube;
+	glm::mat4 model;
 };
 
 DepthMap::DepthMap()
@@ -48,7 +49,7 @@ inline void DepthMap::renderMap(Shader & shader)
 	//投影方式
 	//lightProjection = glm::perspective(glm::radians(45.0f), (GLfloat)SHADOW_WIDTH / (GLfloat)SHADOW_HEIGHT, near_plane, far_plane); // note that if you use a perspective projection matrix you'll have to change the light position as the current light position isn't enough to reflect the whole scene
 	lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
-	lightView = glm::lookAt(lightPos, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));  //光源看向场景中央，所以我们的这个角度就可以生成一个深度纹理
+	lightView = glm::lookAt(lightPos, glm::vec3(1.0f, 0.0f, 24.0), glm::vec3(0.0, 1.0, 0.0));  //光源看向场景中央，所以我们的这个角度就可以生成一个深度纹理
 	lightSpaceMatrix = lightProjection * lightView;  //投影*观察
 	// 从光的视图进行渲染画面
 	shader.use();
@@ -69,8 +70,9 @@ inline void DepthMap::renderMap(Shader & shader)
 inline void DepthMap::renderScene(const Shader & shader)
 {
 	// 绘制机器人
-	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0));
+	model = glm::mat4(1.0f);
+	//model = glm::translate(model, camera.Position);
+	model = glm::translate(model, glm::vec3(1.0f, 0.0f, 24.0));
 	model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0, 0.0, 0.0));
 	model = glm::scale(model, glm::vec3(0.5f));
 	cube.draw(shader, model);

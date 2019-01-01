@@ -28,7 +28,6 @@ float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
 float robot_x, robot_y;  //机器人左右旋转
-float ;  //机器人前后运动
 
 // 光源
 glm::vec3 lightPos(3.4f, 9.6f, 16.9f);
@@ -108,12 +107,12 @@ void processInput(GLFWwindow *window)
 		camera.ProcessKeyboard(LEFT, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)        //D是右移
 		camera.ProcessKeyboard(RIGHT, deltaTime);
-	
+
 	// 调节黑夜白天
-	if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
 		if(ratio < 1.0)
 			ratio += 0.05;
-	if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
 		if (ratio > 0.2)
 			ratio -= 0.05;
 }
