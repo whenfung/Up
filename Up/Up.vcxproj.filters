@@ -82,5 +82,11 @@
     <None Include="model.vs">
       <Filter>着色器</Filter>
     </None>
+    <None Include="lamp.vs">
+      <Filter>着色器</Filter>
+    </None>
+    <None Include="lamp.fs">
+      <Filter>着色器</Filter>
+    </None>
   </ItemGroup>
 </Project>

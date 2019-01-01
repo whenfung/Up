@@ -17,6 +17,7 @@ int main()
 	Shader simpleDepthShader("shadow_depth.vs", "shadow_depth.fs");
 	Shader shader("shadow_map.vs", "shadow_map.fs");  
 	Shader modelShader("model.vs", "model.fs");
+	Shader lampShader("lamp.vs", "lamp.fs");
 
 	// 背景着色器
 	skyboxShader.use();
@@ -26,6 +27,9 @@ int main()
 	shader.use();
 	shader.setInt("diffuseTexture", 0);   //环境贴图
 	shader.setInt("shadowMap", 1);        //阴影贴图
+
+	modelShader.use();
+	modelShader.setInt("material.diffuse", 0);
 
 	Skybox   skybox;       //天空
 	Floor    floor;        //地板
@@ -52,9 +56,9 @@ int main()
 		processInput(window);
 
 		// 随时间变化
-		lightPos.x = sin(glfwGetTime()) * 3.0f;
-		lightPos.z = cos(glfwGetTime()) * 2.0f;
-		lightPos.y = 5.0 + cos(glfwGetTime()) * 1.0f;
+		//lightPos.x = sin(glfwGetTime()) * 3.0f;
+		//lightPos.z = cos(glfwGetTime()) * 2.0f;
+		//lightPos.y = 5.0 + cos(glfwGetTime()) * 1.0f;
 
 		// 渲染
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -89,6 +93,18 @@ int main()
 
 		 // ----------------------------------------渲染OBJ文件
 		modelShader.use();
+		modelShader.setVec3("light.position", lightPos);
+		modelShader.setVec3("viewPos", camera.Position);
+
+		// light properties
+		modelShader.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
+		modelShader.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
+		modelShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
+
+		// material properties
+		modelShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
+		modelShader.setFloat("material.shininess", 32.0f);
+
 
 		// view/projection transformations
 		projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
@@ -135,6 +151,18 @@ int main()
 		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0, 0.0, 0.0));
 		modelShader.setMat4("model", model);
 		balloon.Draw(modelShader);
+
+		//---------------------------------将灯画出来
+		// 将灯画出来
+		lampShader.use();
+		lampShader.setMat4("projection", projection);
+		lampShader.setMat4("view", view);
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, lightPos);
+		model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
+		lampShader.setMat4("model", model);
+		Cube lamp;
+		lamp.draw(lampShader, model);
 
 		//---------------------------------渲染天空图
 		skybox.draw(skyboxShader);         

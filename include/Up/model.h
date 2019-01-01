@@ -27,10 +27,10 @@ class Model
 {
 public:
     /*  Model Data */
-    vector<Texture> textures_loaded;	// stores all the textures loaded so far, optimization to make sure textures aren't loaded more than once.
-    vector<Mesh> meshes;
-    string directory;
-    bool gammaCorrection;
+    vector<Texture> textures_loaded;	// 优化代码，保证所有的纹理只下载一次
+    vector<Mesh> meshes;                //组件
+    string directory;                   //路径
+    bool gammaCorrection;          
 
     /*  Functions   */
     // constructor, expects a filepath to a 3D model.

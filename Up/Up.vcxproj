@@ -134,6 +134,8 @@
     <ClInclude Include="..\include\up\up.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="lamp.fs" />
+    <None Include="lamp.vs" />
     <None Include="shadow_depth.fs" />
     <None Include="shadow_depth.vs" />
     <None Include="shadow_map.fs" />
