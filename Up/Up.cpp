@@ -31,12 +31,13 @@ int main()
 	Floor    floor;        //地板
 	DepthMap depthMap;     // 光源视图深度纹理，用作阴影
 	Model nanosuit("resources/objects/nanosuit/nanosuit.obj");
-
-	// draw in wireframe
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	Model house("resources/objects/house/house.obj");
+	Model dog("resources/objects/dog/12228_Dog_v1_L2.obj");
+	Model balloon("resources/objects/balloon/11809_Hot_air_balloon_l2.obj");
+	Model tree("resources/objects/tree/12150_Christmas_Tree_V2_L2.obj");
 
 	// 所需纹理载入
-	unsigned int woodTexture = loadTexture("resources/textures/sufei.jpg");
+	unsigned int woodTexture = loadTexture("resources/textures/wood.png");
 	//所需天空图载入
 	skybox.loadCubemap();
 
@@ -60,19 +61,17 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //清除深度缓存和颜色缓存
 
 		// 得到光源视图的深度信息，作为深度纹理贴图进行 阴影绘制。
-		depthMap.renderMap(simpleDepthShader);  //生成深度纹理
-
-		// 像往常一样渲染场景，只不过多了个深度纹理 
-		glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+		depthMap.renderMap(simpleDepthShader);  //生成深度纹理。
+		
+												
+		//------------------------对shader做一些设置
 		shader.use();
 		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 		glm::mat4 view = camera.GetViewMatrix();
 		shader.setMat4("projection", projection);
 		shader.setMat4("view", view);
 
-		// 设置光源信息和相机信息
+		//给着色器传入照相机参数、光源参数、以及光空间参数
 		shader.setVec3("viewPos", camera.Position);
 		shader.setVec3("lightPos", lightPos);
 		shader.setMat4("lightSpaceMatrix", depthMap.lightSpaceMatrix);
@@ -81,12 +80,14 @@ int main()
 		glBindTexture(GL_TEXTURE_2D, depthMap.textureID);
 
 		floor.draw(shader);
+
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, woodTexture);
-
 		depthMap.renderScene(shader);      //渲染场景
 
-		 // -------------------------------渲染OBJ文件
+
+
+		 // ----------------------------------------渲染OBJ文件
 		modelShader.use();
 
 		// view/projection transformations
@@ -95,13 +96,45 @@ int main()
 		modelShader.setMat4("projection", projection);
 		modelShader.setMat4("view", view);
 
-		// render the loaded model
+		// 渲染机器人
 		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(5.5f, -0.5f, 0.0f)); // translate it down so it's at the center of the scene
+		model = glm::translate(model, glm::vec3(-5.5f, -0.5f, 0.0f)); // translate it down so it's at the center of the scene
 		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// it's a bit too big for our scene, so scale it down
 		//model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0, 0.0, 0.0));
 		modelShader.setMat4("model", model);
 		nanosuit.Draw(modelShader);
+
+		// 渲染房子
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(20.0f, -0.5f, 0.0f)); // translate it down so it's at the center of the scene
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));	// it's a bit too big for our scene, so scale it down
+		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0, 1.0, 0.0));
+		modelShader.setMat4("model", model);
+		house.Draw(modelShader);
+
+		// 渲染小狗
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(1.0f, -0.5f, 11.0f)); // translate it down so it's at the center of the scene
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));	// it's a bit too big for our scene, so scale it down
+		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0, 0.0, 0.0));
+		modelShader.setMat4("model", model);
+		dog.Draw(modelShader);
+
+		// 渲染圣诞树
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(20.0f, -0.5f, 24.0f)); // translate it down so it's at the center of the scene
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));	// it's a bit too big for our scene, so scale it down
+		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0, 0.0, 0.0));
+		modelShader.setMat4("model", model);
+		tree.Draw(modelShader);
+
+		// 渲染热气球
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(-30.0f, -0.5f, 0.0f)); // translate it down so it's at the center of the scene
+		model = glm::scale(model, glm::vec3(0.02f, 0.02f, 0.02f));	// it's a bit too big for our scene, so scale it down
+		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0, 0.0, 0.0));
+		modelShader.setMat4("model", model);
+		balloon.Draw(modelShader);
 
 		//---------------------------------渲染天空图
 		skybox.draw(skyboxShader);         

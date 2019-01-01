@@ -16,7 +16,7 @@ enum Camera_Movement {
 };
 
 // Default camera values
-const float YAW         = -90.0f;
+const float YAW         =  -90.0f;
 const float PITCH       =  0.0f;
 const float SPEED       =  2.5f;
 const float SENSITIVITY =  0.1f;
@@ -79,7 +79,9 @@ public:
             Position -= Right * velocity;
         if (direction == RIGHT)
             Position += Right * velocity;
-    }
+		// 行走模式下保证人在陆地上走，飞行模式下注释掉下面这行
+		//Position.y = 0.0f; // 保证摄影机在xz平面上
+	}
 
     // 鼠标的移动将会实时更新相机坐标系的欧拉角
     void ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true)

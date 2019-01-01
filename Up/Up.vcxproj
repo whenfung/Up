@@ -134,10 +134,6 @@
     <ClInclude Include="..\include\up\up.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="blending.fs" />
-    <None Include="blending.vs" />
-    <None Include="cubemaps.fs" />
-    <None Include="cubemaps.vs" />
     <None Include="shadow_depth.fs" />
     <None Include="shadow_depth.vs" />
     <None Include="shadow_map.fs" />

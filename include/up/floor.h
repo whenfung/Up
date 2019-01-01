@@ -37,11 +37,12 @@ Floor::Floor()
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 	glBindVertexArray(0);  //先解绑VAO，养成好习惯
 	// 载入地板纹理
-	textureID = loadTexture("resources/textures/caodi.jpg");
+	textureID = loadTexture("resources/textures/wood.png");
 }
 
 inline void Floor::draw(Shader & shader)
 {
+	shader.use();
 	// 绘制地板
 	glm::mat4 model = glm::mat4(1.0f);
 	shader.setMat4("model", model);

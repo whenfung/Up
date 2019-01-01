@@ -11,7 +11,7 @@ public:
 	const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
 	glm::mat4 lightProjection, lightView;        //光源的透视矩阵，光源的观察矩阵
 	glm::mat4 lightSpaceMatrix;                  //光空间变换矩阵
-	float near_plane = 1.0f, far_plane = 7.5f;   //投影的最近到最远的距离
+	float near_plane = 1.0f, far_plane = 20.0f;   //投影的最近到最远的距离
 };
 
 DepthMap::DepthMap()

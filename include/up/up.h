@@ -18,7 +18,7 @@ const unsigned int SCR_WIDTH = 1280;
 const unsigned int SCR_HEIGHT = 720;
 
 // 创建相机并对象设置相机的默认参数，往后移动一点（也就是Z轴）
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+Camera camera(glm::vec3(0.0f, 0.0f, 40.0f));
 float lastX = (float)SCR_WIDTH / 2.0;
 float lastY = (float)SCR_HEIGHT / 2.0;
 bool firstMouse = true;
@@ -27,8 +27,11 @@ bool firstMouse = true;
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
+float robot_x, robot_y;  //机器人左右旋转
+float ;  //机器人前后运动
+
 // 光源
-glm::vec3 lightPos(-2.0f, 4.0f, -1.0f);
+glm::vec3 lightPos(0.0f, 10.0f, 0.0f);
 
 //-----------------------------------------------------------函数声明
 //一些必须要用到的库的初始化
