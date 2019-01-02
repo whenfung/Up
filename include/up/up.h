@@ -18,7 +18,7 @@ const unsigned int SCR_WIDTH = 1280;
 const unsigned int SCR_HEIGHT = 720;
 
 // 创建相机并对象设置相机的默认参数，往后移动一点（也就是Z轴）
-Camera camera(glm::vec3(0.0f, 0.0f, 40.0f));
+Camera camera(glm::vec3(0.0f, 0.0f, 7.0f));
 float lastX = (float)SCR_WIDTH / 2.0;
 float lastY = (float)SCR_HEIGHT / 2.0;
 bool firstMouse = true;
@@ -32,6 +32,9 @@ glm::vec3 lightPos(3.4f, 9.6f, 16.9f);
 
 //调节白天黑夜
 float ratio = 1.0;
+
+float robot_x = 0.0;
+float robot_z = 1.0;
 
 //-----------------------------------------------------------函数声明
 //一些必须要用到的库的初始化
@@ -107,12 +110,22 @@ void processInput(GLFWwindow *window)
 		camera.ProcessKeyboard(RIGHT, deltaTime);
 
 	// 调节黑夜白天
-	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
 		if(ratio < 1.0)
 			ratio += 0.05;
-	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
 		if (ratio > 0.2)
 			ratio -= 0.05;
+
+	// 机器人行走
+	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+		robot_z += 0.01;
+	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+		robot_z -= 0.01;
+	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+		robot_x += 0.01;
+	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+		robot_x -= 0.01;
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)

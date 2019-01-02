@@ -69,52 +69,15 @@ inline void DepthMap::renderMap(Shader & shader)
 
 inline void DepthMap::renderScene(const Shader & shader)  //绘制机器人
 {
+
 	// 身体 （后面全部东西都是以这个矩阵层次建模）
-	bodyModel = glm::mat4(1.0f); 
-	//bodyModel = glm::translate(bodyModel, camera.Position);
-	bodyModel = glm::translate(bodyModel, glm::vec3(1.0f, 1.0f, 34.0));
-	//bodyModel = glm::rotate(bodyModel, glm::radians(-90.0f), glm::vec3(1.0, 0.0, 0.0));
-	bodyModel = glm::scale(bodyModel, glm::vec3(0.5, 0.5, 0.25f));
-	cube.draw(shader, bodyModel);
+	bodyModel = glm::mat4(1.0f);
+	bodyModel = glm::translate(bodyModel, glm::vec3(robot_x, 1.0f, robot_z));
 
-	// 头部
 	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::translate(model, camera.Position);
-	//model = glm::translate(model, glm::vec3(1.0f, 1.5f, 34.0));
-	//model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0, 0.0, 0.0));
-	//model = glm::scale(model, glm::vec3(0.25f));
-	cube.draw(shader, model);
-
-	// 左上肢
-	model = glm::mat4(1.0f);
-	//model = glm::translate(model, camera.Position);
-	//model = glm::translate(model, glm::vec3(1.0f, 0.0f, 33.0));
-	//model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0, 0.0, 0.0));
-	//model = glm::scale(model, glm::vec3(0.5f));
-	cube.draw(shader, model);
-
-	// 右上肢
-	model = glm::mat4(1.0f);
-	//model = glm::translate(model, camera.Position);
-	//model = glm::translate(model, glm::vec3(1.0f, 0.0f, 35.0));
-	//model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0, 0.0, 0.0));
-	//model = glm::scale(model, glm::vec3(0.5f));
-	cube.draw(shader, model);
-
-	// 左下肢
-	model = glm::mat4(1.0f);
-	//model = glm::translate(model, camera.Position);
-	//model = glm::translate(model, glm::vec3(1.0f, 0.0f, 34.0));
-	//model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0, 0.0, 0.0));
-	//model = glm::scale(model, glm::vec3(0.5f));
-	cube.draw(shader, model);
-
-	// 右下肢
-	model = glm::mat4(1.0f);
-	//model = glm::translate(model, camera.Position);
-	//model = glm::translate(model, glm::vec3(1.0f, 0.0f, 34.0));
-	//model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0, 0.0, 0.0));
-	//model = glm::scale(model, glm::vec3(0.5f));
+	//model = glm::rotate(model, glm::radians(30.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.25f));
+	model = bodyModel * model;
 	cube.draw(shader, model);
 }
 
