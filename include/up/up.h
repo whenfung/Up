@@ -38,6 +38,7 @@ float robot_x = 0.0;
 float robot_z = 1.0;
 float robot_step = 1;
 float robot_rotate = 0.0;
+float robot_turn_front = 0.0;
 
 //-----------------------------------------------------------函数声明
 //一些必须要用到的库的初始化
@@ -122,18 +123,22 @@ void processInput(GLFWwindow *window)
 
 	// 机器人行走
 	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+		robot_turn_front = 0.0;
 		robot_rotate += robot_step;
 		robot_z += 0.01;
 	}
 	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+		robot_turn_front = 0.0;
 		robot_rotate += robot_step;
 		robot_z -= 0.01;
 	}
 	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+		robot_turn_front = 90.0;
 		robot_rotate += robot_step;
 		robot_x += 0.01;
 	}
 	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+		robot_turn_front = 90.0;
 		robot_rotate += robot_step;
 		robot_x -= 0.01;
 	}
