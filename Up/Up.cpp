@@ -35,10 +35,10 @@ int main()
 	Floor    floor;        //地板
 	DepthMap depthMap;     // 光源视图深度纹理，用作阴影
 
-	//Model house("resources/objects/house/house.obj");
-	//Model dog("resources/objects/dog/12228_Dog_v1_L2.obj");
-	//Model balloon("resources/objects/balloon/11809_Hot_air_balloon_l2.obj");
-	//Model tree("resources/objects/tree/12150_Christmas_Tree_V2_L2.obj");
+	Model house("resources/objects/house/house.obj");
+	Model dog("resources/objects/dog/12228_Dog_v1_L2.obj");
+	Model balloon("resources/objects/balloon/11809_Hot_air_balloon_l2.obj");
+	Model tree("resources/objects/tree/12150_Christmas_Tree_V2_L2.obj");
 
 	
 	//所需天空图载入
@@ -114,7 +114,7 @@ int main()
 		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));	// it's a bit too big for our scene, so scale it down
 		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0, 1.0, 0.0));
 		modelShader.setMat4("model", model);
-		//house.Draw(modelShader);
+		house.Draw(modelShader);
 
 		// 渲染小狗
 		model = glm::mat4(1.0f);
@@ -122,7 +122,7 @@ int main()
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));	// it's a bit too big for our scene, so scale it down
 		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0, 0.0, 0.0));
 		modelShader.setMat4("model", model);
-		//dog.Draw(modelShader);
+		dog.Draw(modelShader);
 
 		// 渲染圣诞树
 		model = glm::mat4(1.0f);
@@ -130,7 +130,7 @@ int main()
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));	// it's a bit too big for our scene, so scale it down
 		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0, 0.0, 0.0));
 		modelShader.setMat4("model", model);
-		//tree.Draw(modelShader);
+		tree.Draw(modelShader);
 
 		// 渲染热气球
 		model = glm::mat4(1.0f);
@@ -138,7 +138,7 @@ int main()
 		model = glm::scale(model, glm::vec3(0.02f, 0.02f, 0.02f));	// it's a bit too big for our scene, so scale it down
 		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0, 0.0, 0.0));
 		modelShader.setMat4("model", model);
-		//balloon.Draw(modelShader);
+		balloon.Draw(modelShader);
 
 		//---------------------------------将灯画出来
 		// 将灯画出来
