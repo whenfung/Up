@@ -80,7 +80,10 @@ inline void DepthMap::renderScene(const Shader & shader)  //绘制机器人
 	
 	// 主干矩阵 （后面全部东西都是以这个矩阵层次建模）
 	bodyModel = glm::mat4(1.0f);
-	bodyModel = glm::translate(bodyModel, glm::vec3(robot_x, 0.0f, robot_z));
+	// 下面是判断机器人上热气球还是走路
+	if(balloonMode) bodyModel = glm::translate(bodyModel, glm::vec3(camera.Position.x, camera.Position.y - 4.0, camera.Position.z));
+	else bodyModel = glm::translate(bodyModel, glm::vec3(robot_x, 0.0f, robot_z));
+	
 	bodyModel = glm::rotate(bodyModel, glm::radians(robot_turn_front), glm::vec3(0.0, 1.0, 0.0));
 
 	glActiveTexture(GL_TEXTURE0);

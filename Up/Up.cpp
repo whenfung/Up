@@ -134,7 +134,11 @@ int main()
 
 		// 渲染热气球
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(-30.0f, -0.5f, 0.0f)); // translate it down so it's at the center of the scene
+		
+		//飞行模式切换
+		if(balloonMode) model = glm::translate(model, glm::vec3(camera.Position.x , camera.Position.y-4.0, camera.Position.z)); // translate it down so it's at the center of the scene
+		else model = glm::translate(model, glm::vec3(-30.0f, -0.5f, 0.0f)); // translate it down so it's at the center of the scene
+		
 		model = glm::scale(model, glm::vec3(0.02f, 0.02f, 0.02f));	// it's a bit too big for our scene, so scale it down
 		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0, 0.0, 0.0));
 		modelShader.setMat4("model", model);

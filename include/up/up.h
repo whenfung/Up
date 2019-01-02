@@ -18,7 +18,7 @@ const unsigned int SCR_WIDTH = 1280;
 const unsigned int SCR_HEIGHT = 720;
 
 // 创建相机并对象设置相机的默认参数，往后移动一点（也就是Z轴）
-Camera camera(glm::vec3(0.0f, 0.0f, 7.0f));
+Camera camera(glm::vec3(0.0f, 10.0f, 40.0f));
 float lastX = (float)SCR_WIDTH / 2.0;
 float lastY = (float)SCR_HEIGHT / 2.0;
 bool firstMouse = true;
@@ -34,11 +34,13 @@ glm::vec3 lightPos(3.4f, 9.6f, 16.9f);
 float ratio = 1.0;
 
 //机器人参数
-float robot_x = 0.0;
-float robot_z = 1.0;
+float robot_x = 1.0;
+float robot_z = 34.0;
 float robot_step = 1;
 float robot_rotate = 0.0;
 float robot_turn_front = 0.0;
+
+bool balloonMode = false;
 
 //-----------------------------------------------------------函数声明
 //一些必须要用到的库的初始化
@@ -72,7 +74,7 @@ inline GLFWwindow * initWindows()
 
 	// glfw window creation
 	// --------------------
-	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT,"天空之城", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT,"UP", NULL, NULL);
 	if (window == NULL)
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;
@@ -125,23 +127,28 @@ void processInput(GLFWwindow *window)
 	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
 		robot_turn_front = 0.0;
 		robot_rotate += robot_step;
-		robot_z += 0.01;
+		if (!balloonMode) robot_z -= 0.03;
 	}
 	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
 		robot_turn_front = 0.0;
 		robot_rotate += robot_step;
-		robot_z -= 0.01;
+		if (!balloonMode) robot_z += 0.03;
 	}
 	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
 		robot_turn_front = 90.0;
 		robot_rotate += robot_step;
-		robot_x += 0.01;
+		if (!balloonMode) robot_x -= 0.03;
 	}
 	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
 		robot_turn_front = 90.0;
 		robot_rotate += robot_step;
-		robot_x -= 0.01;
+		if (!balloonMode) robot_x += 0.03;
 	}
+	
+	if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS) {
+		balloonMode = !balloonMode;
+	}
+
 	if (robot_rotate > 30) robot_step = -robot_step;
 	if (robot_rotate < -30) robot_step = -robot_step;
 }

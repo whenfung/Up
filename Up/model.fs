@@ -6,14 +6,12 @@ struct Material {
     vec3 specular;    
     float shininess;
 }; 
-
 struct Light {
     vec3 position;
     vec3 ambient;
     vec3 diffuse;
     vec3 specular;
 };
-
 in vec3 FragPos;  
 in vec3 Normal;  
 in vec2 TexCoords;
@@ -26,10 +24,10 @@ uniform float ratio;
 void main()
 {    
     // 环境光
-    vec3 ambient = (light.ambient + 0.4 * ratio) * texture(material.diffuse, TexCoords).rgb;
+    vec3 ambient = (light.ambient + 0.4 * (0.5 * ratio - 0.2)) * texture(material.diffuse, TexCoords).rgb;
   	
     // 漫反射光 
-    vec3 norm = normalize(Normal);
+    vec3 norm = normalize(Normal);  
     vec3 lightDir = normalize(light.position - FragPos);
     float diff = max(dot(norm, lightDir), 0.0);
     vec3 diffuse = light.diffuse * diff * texture(material.diffuse, TexCoords).rgb;  
