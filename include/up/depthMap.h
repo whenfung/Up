@@ -14,10 +14,18 @@ public:
 	float near_plane = 1.0f, far_plane = 30.0f;   //投影的最近到最远的距离
 	Cube cube;
 	glm::mat4 bodyModel;
+	unsigned int textureHand;
+	unsigned int textureBody;
+	unsigned int textureLeg;
 };
 
 DepthMap::DepthMap()
 {
+	// 所需纹理载入
+	textureHand = loadTexture("resources/textures/hand.jpeg");
+	textureBody = loadTexture("resources/textures/body.jpg");
+	textureLeg  = loadTexture("resources/textures/leg.jpg");
+
 	// 创建帧深度对象缓存实现阴影
 	//存在纹理中的所有这些深度值
 	glGenFramebuffers(1, &depthMapFBO);  // 创建一个帧缓存对象
@@ -69,16 +77,86 @@ inline void DepthMap::renderMap(Shader & shader)
 
 inline void DepthMap::renderScene(const Shader & shader)  //绘制机器人
 {
-
-	// 身体 （后面全部东西都是以这个矩阵层次建模）
+	
+	// 主干矩阵 （后面全部东西都是以这个矩阵层次建模）
 	bodyModel = glm::mat4(1.0f);
-	bodyModel = glm::translate(bodyModel, glm::vec3(robot_x, 1.0f, robot_z));
+	bodyModel = glm::translate(bodyModel, glm::vec3(robot_x, 0.0f, robot_z));
 
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, textureBody);
+	// 身体
 	glm::mat4 model = glm::mat4(1.0f);
-	//model = glm::rotate(model, glm::radians(30.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(0.0, 1.0, 0.0));
 	model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.25f));
 	model = bodyModel * model;
 	cube.draw(shader, model);
+
+	glBindTexture(GL_TEXTURE_2D, textureHand);
+	// 头部
+	model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(0.0, 1.75, 0.0));
+	model = glm::scale(model, glm::vec3(0.25f, 0.25f, 0.25f));
+	model = bodyModel * model;
+	cube.draw(shader, model);
+
+	glBindTexture(GL_TEXTURE_2D, textureLeg);
+	//右上肢
+	model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(0.65, 1.00, 0.0));
+
+	//----------------------右上肢转动
+	model = glm::translate(model, glm::vec3(0.0, 0.5, 0.0));
+	model = glm::rotate(model, glm::radians(robot_rotate), glm::vec3(1.0f, 0.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(0.0, -0.5, 0.0));
+	//-----------------------
+
+	model = glm::scale(model, glm::vec3(0.15f, 0.5f, 0.15f));
+	model = bodyModel * model;
+	cube.draw(shader, model);
+
+	// 左上肢
+	model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(-0.65, 1.00, 0.0));
+
+	//----------------------左上肢转动
+	model = glm::translate(model, glm::vec3(0.0, 0.5, 0.0));
+	model = glm::rotate(model, glm::radians(-robot_rotate), glm::vec3(1.0f, 0.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(0.0, -0.5, 0.0));
+	//-----------------------
+
+
+	model = glm::scale(model, glm::vec3(0.15f, 0.5f, 0.15f));
+	model = bodyModel * model;
+	cube.draw(shader, model);
+
+	// 右下肢
+	model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(0.3, 0.0, 0.0));
+
+	//----------------------右下肢转动
+	model = glm::translate(model, glm::vec3(0.0, 0.5, 0.0));
+	model = glm::rotate(model, glm::radians(-robot_rotate), glm::vec3(1.0f, 0.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(0.0, -0.5, 0.0));
+	//-----------------------
+	
+	model = glm::scale(model, glm::vec3(0.15f, 0.5f, 0.15f));
+	model = bodyModel * model;
+	cube.draw(shader, model);
+
+	// 左下肢
+	model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(-0.3, 0.0, 0.0));
+
+	//----------------------左下肢转动
+	model = glm::translate(model, glm::vec3(0.0, 0.5, 0.0));
+	model = glm::rotate(model, glm::radians(robot_rotate), glm::vec3(1.0f, 0.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(0.0, -0.5, 0.0));
+	//-----------------------
+
+	model = glm::scale(model, glm::vec3(0.15f, 0.5f, 0.15f));
+	model = bodyModel * model;
+	cube.draw(shader, model);
+
 }
 
 DepthMap::~DepthMap()

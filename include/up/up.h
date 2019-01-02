@@ -33,8 +33,11 @@ glm::vec3 lightPos(3.4f, 9.6f, 16.9f);
 //调节白天黑夜
 float ratio = 1.0;
 
+//机器人参数
 float robot_x = 0.0;
 float robot_z = 1.0;
+float robot_step = 1;
+float robot_rotate = 0.0;
 
 //-----------------------------------------------------------函数声明
 //一些必须要用到的库的初始化
@@ -118,14 +121,24 @@ void processInput(GLFWwindow *window)
 			ratio -= 0.05;
 
 	// 机器人行走
-	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+		robot_rotate += robot_step;
 		robot_z += 0.01;
-	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+	}
+	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+		robot_rotate += robot_step;
 		robot_z -= 0.01;
-	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+	}
+	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+		robot_rotate += robot_step;
 		robot_x += 0.01;
-	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+	}
+	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+		robot_rotate += robot_step;
 		robot_x -= 0.01;
+	}
+	if (robot_rotate > 30) robot_step = -robot_step;
+	if (robot_rotate < -30) robot_step = -robot_step;
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
